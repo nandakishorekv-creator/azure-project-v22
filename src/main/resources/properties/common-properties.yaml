@@ -1,0 +1,10 @@
+http:
+  host: ""
+  port: ""
+  protocol: ""
+  timeout: ""
+keystore:
+  path: ""
+  alias: ""
+salesforce:
+  url: ""

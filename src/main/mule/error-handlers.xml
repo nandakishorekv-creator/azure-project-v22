@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core ./knowledge-base/schemas/mule-core.xsd
+        http://www.mulesoft.org/schema/mule/ee/core ./knowledge-base/schemas/mule-core.xsd">
+
+  <error-handler name="globalErrorHandler">
+    <on-error-propagate type="SALESFORCE:CONNECTIVITY" doc:name="Handle SALESFORCE:CONNECTIVITY">
+      <ee:transform doc:name="Build Error Response">
+        <ee:message>
+          <ee:set-payload>
+            %dw 2.0
+output application/json
+---
+{
+  errorType: "SALESFORCE:CONNECTIVITY",
+  message: ((error.description default "Internal error") as String),
+  detail: (error.detailedDescription default error.cause default "")
+}
+          </ee:set-payload>
+        </ee:message>
+      </ee:transform>
+      <set-variable variableName="httpStatus" value="500"></set-variable>
+    </on-error-propagate>
+    <on-error-propagate type="SALESFORCE:INVALID_SESSION" doc:name="Handle SALESFORCE:INVALID_SESSION">
+      <ee:transform doc:name="Build Error Response">
+        <ee:message>
+          <ee:set-payload>
+            %dw 2.0
+output application/json
+---
+{
+  errorType: "SALESFORCE:INVALID_SESSION",
+  message: ((error.description default "Internal error") as String),
+  detail: (error.detailedDescription default error.cause default "")
+}
+          </ee:set-payload>
+        </ee:message>
+      </ee:transform>
+      <set-variable variableName="httpStatus" value="500"></set-variable>
+    </on-error-propagate>
+    <on-error-propagate type="MULE:EXPRESSION" doc:name="Handle MULE:EXPRESSION">
+      <ee:transform doc:name="Build Error Response">
+        <ee:message>
+          <ee:set-payload>
+            %dw 2.0
+output application/json
+---
+{
+  errorType: "MULE:EXPRESSION",
+  message: ((error.description default "Internal error") as String),
+  detail: (error.detailedDescription default error.cause default "")
+}
+          </ee:set-payload>
+        </ee:message>
+      </ee:transform>
+      <set-variable variableName="httpStatus" value="500"></set-variable>
+    </on-error-propagate>
+    <on-error-propagate type="MULE:CONNECTIVITY" doc:name="Handle MULE:CONNECTIVITY">
+      <ee:transform doc:name="Build Error Response">
+        <ee:message>
+          <ee:set-payload>
+            %dw 2.0
+output application/json
+---
+{
+  errorType: "MULE:CONNECTIVITY",
+  message: ((error.description default "Internal error") as String),
+  detail: (error.detailedDescription default error.cause default "")
+}
+          </ee:set-payload>
+        </ee:message>
+      </ee:transform>
+      <set-variable variableName="httpStatus" value="500"></set-variable>
+    </on-error-propagate>
+    <on-error-propagate type="ANY" doc:name="Handle ANY">
+      <ee:transform doc:name="Build Error Response">
+        <ee:message>
+          <ee:set-payload>
+            %dw 2.0
+output application/json
+---
+{
+  errorType: "ANY",
+  message: ((error.description default "Internal error") as String),
+  detail: (error.detailedDescription default error.cause default "")
+}
+          </ee:set-payload>
+        </ee:message>
+      </ee:transform>
+      <set-variable variableName="httpStatus" value="500"></set-variable>
+    </on-error-propagate>
+  </error-handler>
+
+</mule>

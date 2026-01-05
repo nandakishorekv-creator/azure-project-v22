@@ -1,0 +1,8 @@
+keystore:
+  password: ""
+key:
+  password: ""
+salesforce:
+  username: ""
+  password: ""
+  token: ""
